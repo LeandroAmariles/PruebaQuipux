@@ -44,9 +44,6 @@ public class User implements UserDetails {
   @Column(nullable = false)
   private String password;
 
-  @Column
-  private String photo;
-
   @OneToOne(cascade = CascadeType.REFRESH)
   @JoinColumn(name = "role_id", referencedColumnName = "role_id")
   @ToString.Exclude

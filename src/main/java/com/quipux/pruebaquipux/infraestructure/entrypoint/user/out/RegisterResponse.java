@@ -22,7 +22,5 @@ public class RegisterResponse {
 
   private String email;
 
-  private String photo;
-
   private AuthenticationResponse auth;
 }
