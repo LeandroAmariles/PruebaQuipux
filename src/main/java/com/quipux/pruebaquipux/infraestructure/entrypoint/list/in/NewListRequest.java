@@ -1,13 +1,18 @@
 package com.quipux.pruebaquipux.infraestructure.entrypoint.list.in;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.quipux.pruebaquipux.domain.entities.Song;
-import jakarta.validation.constraints.NotBlank;
+import com.quipux.pruebaquipux.infraestructure.entrypoint.song.in.NewSongRequest;
+import com.quipux.pruebaquipux.infraestructure.entrypoint.song.in.NewSongRequestList;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Builder
+@Getter
+@Setter
 public class NewListRequest {
 
 
@@ -20,6 +25,6 @@ public class NewListRequest {
   private String descripcion;
 
   @JsonProperty("canciones")
-  private List<Song> songs;
+  private List<NewSongRequestList> songs;
 
 }

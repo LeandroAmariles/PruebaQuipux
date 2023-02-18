@@ -5,11 +5,8 @@ import com.quipux.pruebaquipux.domain.usecase.song.SongService;
 import com.quipux.pruebaquipux.infraestructure.entrypoint.song.in.NewSongRequest;
 import com.quipux.pruebaquipux.infraestructure.entrypoint.song.out.NewSongResponse;
 import com.quipux.pruebaquipux.infraestructure.entrypoint.song.out.SongDeletedResponse;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 
 @RestController
@@ -39,7 +37,7 @@ public class SongController {
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
-  @DeleteMapping
+  @DeleteMapping("/{id}")
   public ResponseEntity<SongDeletedResponse> deleteSong(@NotNull @PathVariable Long id){
 
     SongDeletedResponse response = songService.deleteSong(id);

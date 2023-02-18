@@ -33,4 +33,15 @@ public class GlobalExceptionHandler {
 
     return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
   }
+
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<ErrorDetails> handleNotFoundException(Exception exception){
+    ErrorDetails error = ErrorDetails.builder()
+        .timestamp(Calendar.getInstance().getTime())
+        .details(exception.getLocalizedMessage())
+        .message(exception.getMessage())
+        .build();
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+  }
 }

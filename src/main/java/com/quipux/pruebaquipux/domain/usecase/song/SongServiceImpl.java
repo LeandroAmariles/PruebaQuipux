@@ -12,6 +12,7 @@ import com.quipux.pruebaquipux.infraestructure.repository.ListRepository;
 import com.quipux.pruebaquipux.infraestructure.repository.SongRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class SongServiceImpl implements SongService{
 
 
   @Override
+  @Transactional
   public NewSongResponse saveNewSong(NewSongRequest request) {
     if (!canCreate(request.getTitulo(), request.getIdLista())){
       throw new CreateException("No se puede guardar la cancion");
@@ -42,6 +44,7 @@ public class SongServiceImpl implements SongService{
   }
 
   @Override
+  @Transactional
   public SongDeletedResponse deleteSong(Long id) {
     songRepository.findById(id).ifPresent(songRepository::delete);
     return SongDeletedResponse.builder().message(String.format("La cancion con  id %s fue borrada ", id)).build();

@@ -1,8 +1,5 @@
 package com.quipux.pruebaquipux.infraestructure.entrypoint.song.out;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
