@@ -73,7 +73,9 @@ public class ListServiceImpl implements ListService{
     if(!listRepository.existsByNombre(name)){
       throw new ConflictException(String.format("no se encontro la lista con nombre %s",name));
     }
-    Lista lista = listRepository.deleteByNombre(name);
+    Lista list = listRepository.findByNombre(name);
+
+    listRepository.deleteById(list.getId());
 
     return ListDeleteResponse.builder().message(" La lista fue eliminada exitosamente").build();
 

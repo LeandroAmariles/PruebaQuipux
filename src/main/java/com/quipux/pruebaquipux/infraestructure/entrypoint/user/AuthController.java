@@ -9,8 +9,15 @@ import com.quipux.pruebaquipux.infraestructure.entrypoint.user.in.NewUserRequest
 import com.quipux.pruebaquipux.infraestructure.entrypoint.user.out.AuthenticationResponse;
 import com.quipux.pruebaquipux.infraestructure.entrypoint.user.out.RegisterResponse;
 import com.quipux.pruebaquipux.infraestructure.entrypoint.user.out.UserResponse;
+import com.quipux.pruebaquipux.infraestructure.exception.ErrorDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +39,7 @@ import java.util.Date;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Validated
 public class AuthController {
 
   private final AuthenticationManager authenticationManager;
@@ -41,12 +50,36 @@ public class AuthController {
 
   private final UserMapper mapper;
 
+  @Operation(summary = "Login de usuario", description = "El usuario hace login al ingresar su email y su contrasena",
+      responses = {
+      @ApiResponse(responseCode = "200", description = "Ok"),
+      @ApiResponse(responseCode = "404", description = "Not Found",
+          content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array = @ArraySchema(schema = @Schema(implementation = ErrorDetails.class)))}),
+      @ApiResponse(responseCode = "400", description = "Bad Request",
+          content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array = @ArraySchema(schema = @Schema(implementation = ErrorDetails.class)))}),
+      @ApiResponse(responseCode = "409", description = "Conflict",
+          content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ErrorDetails.class))})})
   @PostMapping("/login")
   @ResponseStatus(HttpStatus.OK)
   public AuthenticationResponse login(@Valid @RequestBody LoginRequest request) {
     return createJwtToken(request.getUserName(), request.getPassword());
   }
 
+  @Operation(summary = "Registra un nuevo usuario", description = "Registra un usuario y lo logea devolviendole un JWT",
+      responses = {
+      @ApiResponse(responseCode = "200", description = "Ok"),
+      @ApiResponse(responseCode = "404", description = "Not Found",
+          content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array = @ArraySchema(schema = @Schema(implementation = ErrorDetails.class)))}),
+      @ApiResponse(responseCode = "400", description = "Bad Request",
+          content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array = @ArraySchema(schema = @Schema(implementation = ErrorDetails.class)))}),
+      @ApiResponse(responseCode = "409", description = "Conflict",
+          content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ErrorDetails.class))})})
   @PostMapping("/register")
   public ResponseEntity<RegisterResponse> register(@Valid @RequestBody NewUserRequest userRequest) {
     RegisterResponse response = userService.createEntity(userRequest);
@@ -66,10 +99,5 @@ public class AuthController {
     throw new AccessDeniedException("error in the authentication process");
   }
 
-  @GetMapping("/me")
-  public ResponseEntity<UserResponse> getUserInformation(@AuthenticationPrincipal User user) {
-    UserResponse userResponse = mapper.entityToResponse(user);
-    return new ResponseEntity<>(userResponse, HttpStatus.OK);
-  }
 
 }

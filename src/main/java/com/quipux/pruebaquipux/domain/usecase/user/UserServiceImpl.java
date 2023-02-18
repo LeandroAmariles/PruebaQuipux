@@ -1,6 +1,7 @@
 package com.quipux.pruebaquipux.domain.usecase.user;
 
 
+import com.quipux.pruebaquipux.domain.entities.Role;
 import com.quipux.pruebaquipux.domain.entities.User;
 import com.quipux.pruebaquipux.domain.usecase.user.mapper.UserMapper;
 import com.quipux.pruebaquipux.infraestructure.entrypoint.user.in.NewUserRequest;
@@ -40,6 +41,14 @@ public class UserServiceImpl implements UserService {
     if (exist(user.getEmail())) {
       throw new ConflictException("There is already an account with that email address: " + user);
     }
+    Role rolAdmin = new Role();
+    rolAdmin.setDescription("Rol de administrador");
+    rolAdmin.setName("ADMIN");
+    Role rolUser = new Role();
+    rolUser.setDescription("Rol de usuario");
+    rolUser.setName("USER");
+    roleRepository.save(rolAdmin);
+    roleRepository.save(rolUser);
     User user1 = userMapper.requestToEntity(user);
     user1.setPassword(passwordEncoder.encode(user1.getPassword()));
     user1.setRole(roleRepository.findById(id_rol).get());
